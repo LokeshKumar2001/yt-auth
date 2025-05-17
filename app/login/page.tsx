@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -10,8 +16,16 @@ const LoginPage = () => {
 
   const [disable, setDisable] = useState(true);
 
-  const submitHandler = () => {
-    console.log(user);
+  const submitHandler = async () => {
+    try {
+      const res = await axios.post("/api/users/login", user);
+      router.push("/");
+      console.log(res);
+      toast.success(res.data.message);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
   };
 
   useEffect(() => {
